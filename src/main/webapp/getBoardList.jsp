@@ -36,11 +36,11 @@
 				<th bgcolor="orange" width="100px">조회수</th>
 			</tr>
 
+			<!-- DB의 값을 가져와서 루프 시작 -->
 			<%
 				for (BoardDTO k : boardList) {
 					
 			%>
-			<!-- DB의 값을 가져와서 루프 시작 -->
 			<tr>
 				<td><%=k.getSeq()%></td>
 				<td><%=k.getTitle()%></td>
@@ -48,10 +48,11 @@
 				<td><%=k.getRegdate()%></td>
 				<td><%=k.getCnt()%></td>
 			</tr>
-			<!-- 루프 종료 -->
 			<%
 				};
+				session.removeAttribute("boardList");
 			%>
+			<!-- 루프 종료 -->
 			
 		</table>
 		<br> <br> <a href="insertBoard.jsp">새 글 등록</a>

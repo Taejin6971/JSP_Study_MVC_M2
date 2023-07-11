@@ -35,21 +35,22 @@
 				<th bgcolor="orange" width="150px">ROLE</th>
 			</tr>
 
+			<!-- DB의 값을 가져와서 루프 시작 -->
 			<%
 				for (UsersDTO k : usersList) {
 					
 			%>
-			<!-- DB의 값을 가져와서 루프 시작 -->
 			<tr>
 				<td><%=k.getId() %></td>
 				<td><%=k.getPassword() %></td>
 				<td><%=k.getName() %></td>
 				<td><%=k.getRole() %></td>
 			</tr>
-			<!-- 루프 종료 -->
 			<%
 				};
+				session.removeAttribute("usersList");
 			%>
+			<!-- 루프 종료 -->
 			
 		</table>
 		<br> <br> <a href="insertUsers.jsp">새 글 등록</a>
