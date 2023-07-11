@@ -33,4 +33,16 @@
   	<servlet-name>action2</servlet-name>
   	<url-pattern>*.action</url-pattern>
   </servlet-mapping>
+  
+    <!-- Controller Mapping : *.action (Client 요청) ==> com.mtsite.controller.MyController -->
+  
+    <servlet>
+  	<servlet-name>action3</servlet-name>
+  	<servlet-class>com.mysite.controller.MyController3</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>action3</servlet-name>
+  	<url-pattern>*.can</url-pattern>
+  </servlet-mapping>
 </web-app>
