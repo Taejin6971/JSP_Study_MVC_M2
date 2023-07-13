@@ -70,6 +70,8 @@
 		<a href = "insertUsers.jsp">User 작성</a>
 		<br><br>
 		<a href = "deleteUsers.do?id=<%=user.getId()%>">글 삭제</a>
+		<br><br>
+		<a href="/JSP_Study_MVC_M2">처음으로 이동</a>
 	</div>
 </body>
 </html>

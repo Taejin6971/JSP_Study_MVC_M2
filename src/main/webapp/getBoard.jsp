@@ -76,7 +76,9 @@
 		<br><br>
 		<a href = "insertBoard.jsp">글 쓰기</a>
 		<br><br>
-		<a href = "deleteBoard.do?seq=<%=board.getSeq()%>">글 삭제</a>
+		<a href = "deleteBoard.do?seq=<%=board.getSeq()%>&write=<%=board.getWrite()%>">글 삭제</a>
+		<br><br>
+		<a href="/JSP_Study_MVC_M2">처음으로 이동</a>
 	</div>
 </body>
 </html>

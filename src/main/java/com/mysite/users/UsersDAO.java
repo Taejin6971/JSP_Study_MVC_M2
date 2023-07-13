@@ -16,16 +16,22 @@ public class UsersDAO {
 	private ResultSet rs = null;
 
 	private final String USERS_INSERT = 
-			"insert into users(id, password, name, role) " + "values(?, ?, ?, ?)";
+			"insert into users(id, password, name, role) values(?, ?, ?, ?)";
 	
 	private final String USERS_UPDATE = 
-			"update users set password = ?, name = ?, role = ? where id=?";
+			"update users set password=?, name=?, role=? where id=?";
 	
+	private final String USERS_DELETE =
+			"";
+			
 	private final String USERS_GET = 
 			"select * from users where id=?";
 
 	private final String USERS_LIST = 
 			"select * from users order by id desc";
+	
+	private final String USERS_LOGIN =
+			"select * from users where id=? and password=?";
 
 	// 1. users 테이블의 값을 넣는 메소드
 		// USERS_INSERT = "insert into users(id, password, name, role) " + "values(?, ?, ?, ?)";
@@ -145,6 +151,48 @@ public class UsersDAO {
 		} finally {
 			JDBCUtill.close(pstmt, conn);;
 		}
+	}
+	
+	// 5. login
+		// USERS_LOGIN = "select * from users where id=? and password=?";
+	public UsersDTO login(UsersDTO dto) {
+		UsersDTO user = null;
+		
+		try {
+			conn = JDBCUtill.getConnction();
+			pstmt = conn.prepareStatement(USERS_LOGIN);
+			
+			pstmt.setString(1, dto.getId());
+			pstmt.setString(2, dto.getPassword());
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				user = new UsersDTO();
+				
+				user.setId(rs.getString("ID"));
+				user.setPassword(rs.getString("PASSWORD"));
+				user.setName(rs.getString("NAME"));
+				user.setRole(rs.getString("ROLE"));
+				
+				System.out.println("인증성공 : DB에 해당 아이디/패스워드 존재");
+			}
+			
+			// rs의 값이 존재하면 : 인증성공
+			// rs의 값이 존재하지 않으면 : 인증실패
+			
+			System.out.println("login 성공");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("login 실패");
+			
+		} finally {
+			JDBCUtill.close(rs, pstmt, conn);
+			
+		}
+		
+		return user;
 	}
 	
 }

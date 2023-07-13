@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 
 import com.mysite.board.BoardDAO;
 import com.mysite.board.BoardDTO;
+import com.mysite.products.ProductsDAO;
+import com.mysite.products.ProductsDTO;
 import com.mysite.users.UsersDAO;
 import com.mysite.users.UsersDTO;
 
@@ -86,9 +88,59 @@ public class MyController extends HttpServlet {
 			System.out.println("login.do 요청을 했습니다.");
 			// 로그인을 처리하는 코드 블락
 			
+			// 1. client from 에서 넘어오는 변수 : id, password
+			String id = request.getParameter("id");
+			String password = request.getParameter("password");
+			System.out.println(id);
+			// 2. DTO에 저장
+			UsersDTO dto = new UsersDTO();
+			dto.setId(id);
+			dto.setPassword(password);
+			
+			// 3. DAO 에 메소드 호출
+			UsersDAO dao = new UsersDAO();
+			
+			// 리턴 받은 user의 값이 null 인 경우 <== 해당 id나 password가 일치하지 않는 경우 
+			// 리턴 받은 user의 값이 null 이 아닐 경우 <== 해당 id나 password가 DB에 존재
+				// session 변수에 정보값 입력
+			UsersDTO user = dao.login(dto);			
+			
+			if (user == null) { // 인증 실패
+				System.out.println("인증 실패 했습니다.");
+
+				response.sendRedirect("LoginForm.jsp");
+
+			} else { // 인증 성공
+				System.out.println("인증 성공 했습니다.");
+				// session 변수를 생성하고 변수에 ID값을 담아서 client view 페이지로 전송
+				HttpSession session = request.getSession();
+				System.out.println(session);
+				
+				// session 변수에 dto의 값 할당.
+				// id <== DB에서 가져온 id값
+				// role <== DB에서 가져온 role값
+				session.setAttribute("id",user.getId());
+				session.setAttribute("role",user.getRole());
+				
+				System.out.println("===== 세션에 담기는 값 =====");
+				System.out.println(user.getId());
+				System.out.println(user.getRole());
+				
+				response.sendRedirect("LoginForm.jsp");
+			}
+			
 		} else if (path.equals("/logout.do")) {
 			System.out.println("logout.do 요청을 했습니다.");
 			// 로그아웃을 처리하는 코드 블락
+			
+			// 1. session의 모든 변수와 값을 삭제
+			HttpSession session = request.getSession();
+			
+			// 접속한 클라이언트에 session에 저장된 모든 변수의 값을 삭제
+			session.invalidate();
+			
+			// 2. session 삭제후 이동 페이지
+			response.sendRedirect("/JSP_Study_MVC_M2");
 			
 		} else if (path.equals("/insertBoard.do")) {
 			System.out.println("insertBoard.do 요청을 했습니다.");
@@ -191,15 +243,22 @@ public class MyController extends HttpServlet {
 			// 4. view 페이지 이동
 			response.sendRedirect("getBoardList.do");	
 			
+		} else if (path.equals("/deleteBoard.do")) {
+			// 글 삭제 코드블락
+			System.out.println("deleteBoard.do 요청");
 			
+			String seq = request.getParameter("seq");
+			String write = request.getParameter("write");
 			
+			BoardDTO dto = new BoardDTO();
+			dto.setSeq(Integer.parseInt(seq));
+			dto.setWrite(write);
 			
+			BoardDAO dao = new BoardDAO();
+			dao.deleteBoard(dto);
 			
+			response.sendRedirect("getBoardList.do");
 			
-		
-		
-		
-		
 		} else if (path.equals("/insertUsers.do")) {
 			// Users 테이블에 값을 insert 코트블락
 			System.out.println("insertUsers.do 요청");
@@ -287,6 +346,46 @@ public class MyController extends HttpServlet {
 				
 			// 4. view 페이지 이동
 			response.sendRedirect("getUsersList.do");	
+			
+		} else if (path.equals("/insertProducts.do")) {
+			System.out.println("insertProducts.do 요청");
+			
+			String p_code = request.getParameter("p_code");
+			String p_name = request.getParameter("p_name");
+			String p_kind = request.getParameter("p_kind");
+			String p_price = request.getParameter("p_price");
+			String p_content = request.getParameter("p_content");
+			String p_quantity = request.getParameter("p_quantity");
+			
+			ProductsDTO dto = new ProductsDTO();
+			dto.setP_code(Integer.parseInt(p_code));
+			dto.setP_name(p_name);
+			dto.setP_kind(p_kind);
+			dto.setP_price(p_price);
+			dto.setP_content(p_content);
+			dto.setP_quantity(p_quantity);
+			
+			ProductsDAO dao = new ProductsDAO();
+			dao.insertProducts(dto);
+			
+			response.sendRedirect("getProductList.do");
+			
+		} else if (path.equals("/getProductList.do")) {
+			System.out.println("getProductList.do 요청을 했습니다.");
+			
+			ProductsDTO dto = new ProductsDTO();
+			
+			ProductsDAO dao = new ProductsDAO();
+			
+			List<ProductsDTO> productsList = new ArrayList<ProductsDTO>(); 
+			
+			productsList = dao.getProductsList(dto);
+			
+			HttpSession session = request.getSession();
+			
+			session.setAttribute("productsList", productsList);
+			
+			response.sendRedirect("getProductList.jsp");
 		}
 	}
 

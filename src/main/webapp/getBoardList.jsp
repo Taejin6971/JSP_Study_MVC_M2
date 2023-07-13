@@ -5,7 +5,7 @@
 <%@ page import = "com.mysite.board.BoardDTO" %>
 
 <%
-	// session에 저장된 값을 꺼낸다.
+// session에 저장된 값을 꺼낸다.
 	List<BoardDTO> boardList = new ArrayList<BoardDTO>();
 	
 	boardList = (List) session.getAttribute("boardList");
@@ -38,8 +38,7 @@
 
 			<!-- DB의 값을 가져와서 루프 시작 -->
 			<%
-				for (BoardDTO k : boardList) {
-					
+			for (BoardDTO k : boardList) {
 			%>
 			<tr>
 				<td><%=k.getSeq()%></td>
