@@ -43,8 +43,13 @@
 			%>
 			<tr>
 				<td><%=k.getSeq()%></td>
-				<td><%=k.getTitle()%></td>
-				<td><%=k.getwrite()%></td>
+				<!-- 제목에 링크를 걸어서 글의 상세페이지를 출력 할수있도록 GET 방식으로 링크설정 -->
+				<td>
+				<a href = "getBoard.do?seq=<%=k.getSeq()%>">
+				<%=k.getTitle()%>
+				</a>
+				</td>
+				<td><%=k.getWrite()%></td>
 				<td><%=k.getRegdate()%></td>
 				<td><%=k.getCnt()%></td>
 			</tr>
@@ -55,7 +60,9 @@
 			<!-- 루프 종료 -->
 			
 		</table>
-		<br> <br> <a href="insertBoard.jsp">새 글 등록</a>
+		<br><br>
+		<a href="insertBoard.jsp">새 글 등록</a><p/>
+		<a href="/JSP_Study_MVC_M2">처음으로 이동</a>
 	</div>
 </body>
 </html>

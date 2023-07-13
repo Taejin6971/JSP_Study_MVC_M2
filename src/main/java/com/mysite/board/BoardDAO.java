@@ -24,11 +24,16 @@ public class BoardDAO {
 			"insert into board(seq, title, write, content) "
 			+ "values((select nvl(max(seq),0) + 1 from board), ?, ?, ?)";
 	
-	private final String BOARD_UPDATE = "";
+	private final String BOARD_UPDATE = 
+			"update board set title = ?, content = ? where seq=?";
 	
 	private final String BOARD_DELETE = "";
 	
-	private final String BOARD_GET = "";
+	private final String BOARD_GET = 
+			"select * from board where seq = ?";
+	
+	private final String BOARD_ADD_CNT =
+			"update board set cnt=(select cnt+1 from board where seq=?) where seq=?";
 	
 	private final String BOARD_LIST = 
 			"select * from board order by seq desc";
@@ -44,9 +49,10 @@ public class BoardDAO {
 			
 			// prepareStatement 객체 활성화
 			pstmt = conn.prepareStatement(BOARD_INSERT);	
+			
 			// ? 에 들어갈 변수의 값을 dto의 getter를 사용해서 값을 할당
 			pstmt.setString(1, dto.getTitle());
-			pstmt.setString(2, dto.getwrite());
+			pstmt.setString(2, dto.getWrite());
 			pstmt.setString(3, dto.getContent());
 			
 			// prepareStatement 객체 실행 : DB에 값이 insert 됨
@@ -61,16 +67,91 @@ public class BoardDAO {
 		} finally {
 			//사용한 객체 제거
 			JDBCUtill.close(pstmt, conn);
-			
 		}
 	}
 
 	// 2. UPDATE
+		//BOARD_UPDATE = "update board set title = ?, content = ? where seq=?";
+	public void updateBoard(BoardDTO dto) {
+		System.out.println("updateBoard 메소드 호출");
+		
+		try {
+			conn = JDBCUtill.getConnction();
+			pstmt = conn.prepareStatement(BOARD_UPDATE);
+			
+			pstmt.setString(1, dto.getTitle());
+			pstmt.setString(2, dto.getContent());
+			pstmt.setInt(3, dto.getSeq());
+			
+			pstmt.executeUpdate();
+			
+			System.out.println("update 성공");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("update 실패");
+		} finally {
+			JDBCUtill.close(pstmt, conn);;
+		}
+	}
 	
 	// 3. DELETE
 	
-	// 4. 상세 페이지 (GET) : 레코드 1개
+	// 4. 상세 페이지 (GET) : 레코드 1개 : 리턴 타입 BoardDTO
+		// BOARD_GET = "select * from board where seq = ?";
+	public BoardDTO getBoard(BoardDTO dto) {
+		BoardDTO board = new BoardDTO();
+		
+		// 조회수 늘려주는 메소드
+		addCNT(dto);
+		
+		try {
+			conn = JDBCUtill.getConnction();
+			pstmt = conn.prepareStatement(BOARD_GET);
+			
+			pstmt.setInt(1, dto.getSeq());
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				board.setSeq(rs.getInt("SEQ"));
+				board.setTitle(rs.getString("TITLE"));
+				board.setWrite(rs.getString("WRITE"));
+				board.setContent(rs.getString("CONTENT"));
+				board.setRegdate(rs.getDate("REGDATE"));
+				board.setCnt(rs.getInt("CNT"));
+			}
+			System.out.println("Board 테이블에서 상세레코드가 처리되었습니다.");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Board 테이블에서 상세레코드가 처리실패했습니다.");
+			
+		} finally {
+			JDBCUtill.close(rs, pstmt, conn);
+			
+		}
+		return board;
+	}
 	
+	// 조회수 증마 메소드 :
+	// BOARD_ADD_CNT = "update board set cnt=(select cnt+1 from board where seq=?) where seq=?";
+	public void addCNT(BoardDTO dto) {
+		try {
+			conn = JDBCUtill.getConnction();
+			pstmt = conn.prepareStatement(BOARD_ADD_CNT);
+			
+			pstmt.setInt(1, dto.getSeq());
+			pstmt.setInt(2, dto.getSeq());
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+
+		} finally {
+			
+		}
+	}
+
 	// 5. 리스트 페이지 (BOARD_LIST) : 레코드 여러개
 		// BOARD_LIST = "select * from board order by seq desc";
 	public List<BoardDTO> getBoardList(BoardDTO dto) {
@@ -87,17 +168,16 @@ public class BoardDAO {
 			while (rs.next()) {
 				// 주의 : while 블락 내에서 DTO 객체를 생성해야 board(dto)의 heap주소가 새로생성됨.
 				BoardDTO board = new BoardDTO();
-				board.setSeq(rs.getInt("seq"));
-				board.setTitle(rs.getString("title"));
-				board.setwrite(rs.getString("write"));
-				board.setContent(rs.getString("content"));
-				board.setRegdate(rs.getDate("regdate"));
-				board.setCnt(rs.getInt("cnt"));
+				board.setSeq(rs.getInt("SEQ"));
+				board.setTitle(rs.getString("TITLE"));
+				board.setWrite(rs.getString("WRITE"));
+				board.setContent(rs.getString("CONTENT"));
+				board.setRegdate(rs.getDate("REGDATE"));
+				board.setCnt(rs.getInt("CNT"));
 				
 				// boardList에 DTO를 추가
 				boardList.add(board);
 			}
-			
 			System.out.println("boardList에 모든 레코드 추가 성공");
 			
 		} catch (Exception e) {
@@ -107,8 +187,8 @@ public class BoardDAO {
 		} finally {
 			// 사용한 객체 모두 제거
 			JDBCUtill.close(rs, pstmt, conn);
+			
 		}
-		
 		return boardList;	// boardList : board 테이블의 각각의 레코드를 dto에 담아서 boardList에 저장.
 	}
 }

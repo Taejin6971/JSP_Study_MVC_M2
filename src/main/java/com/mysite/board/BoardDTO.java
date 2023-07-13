@@ -47,11 +47,11 @@ public class BoardDTO {
 		this.title = title;
 	}
 
-	public String getwrite() {
+	public String getWrite() {
 		return write;
 	}
 
-	public void setwrite(String write) {
+	public void setWrite(String write) {
 		this.write = write;
 	}
 

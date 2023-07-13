@@ -27,8 +27,9 @@
 					<td align="left"><input type="text" name="role" size="10" /></td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><input type="submit"
-						value=" 등록 " /></td>
+					<td colspan="2" align="center">
+					<input type="submit" value=" 등록 " />
+					</td>
 				</tr>
 			</table>
 		</form>

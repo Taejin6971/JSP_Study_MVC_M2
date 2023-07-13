@@ -43,7 +43,11 @@
 			<tr>
 				<td><%=k.getId() %></td>
 				<td><%=k.getPassword() %></td>
-				<td><%=k.getName() %></td>
+				<td>
+				<a href = "getUsers.do?id=<%=k.getId()%>">
+				<%=k.getName() %>
+				</a>
+				</td>
 				<td><%=k.getRole() %></td>
 			</tr>
 			<%
@@ -53,7 +57,9 @@
 			<!-- 루프 종료 -->
 			
 		</table>
-		<br> <br> <a href="insertUsers.jsp">새 글 등록</a>
+		<br><br>
+		<a href="insertUsers.jsp">새 글 등록</a><p/>
+		<a href="/JSP_Study_MVC_M2">처음으로 이동</a>
 	</div>
 </body>
 </html>
