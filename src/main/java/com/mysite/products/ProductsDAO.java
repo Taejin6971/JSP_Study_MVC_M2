@@ -19,7 +19,7 @@ public class ProductsDAO {
 			+ "values(?, ?, ?, ?, ?, ?)";
 	
 	private final String PRODUCTS_LIST=
-			"";
+			"select * from product order by p_code";
 	
 	public void insertProducts(ProductsDTO dto) {
 		System.out.println("insertProducts 메소드 호출");
@@ -36,7 +36,6 @@ public class ProductsDAO {
 			pstmt.setString(5, dto.getP_content());
 			pstmt.setString(6, dto.getP_quantity());
 		
-			
 			pstmt.executeUpdate();
 			
 			System.out.println("insert 성공");
@@ -50,38 +49,38 @@ public class ProductsDAO {
 		}
 	}
 
-	public List<ProductsDTO> getProductsList(ProductsDTO dto){
-		System.out.println("getProductsList 메소드 호출");
-	List<ProductsDTO> productsList = new ArrayList<ProductsDTO>();
+	public List<ProductsDTO> getProductList(ProductsDTO dto){
+		System.out.println("getProductList 메소드 호출");
+		List<ProductsDTO> productList = new ArrayList<ProductsDTO>();
 	
-	try {
-		conn = JDBCUtill.getConnction();
-		pstmt = conn.prepareStatement(PRODUCTS_LIST);
-		rs = pstmt.executeQuery();
-		
-		while (rs.next()) {
-			ProductsDTO product = new ProductsDTO();
-			product.setP_code(rs.getInt("P_CODE"));
-			product.setP_name(rs.getString("P_NAME"));
-			product.setP_kind(rs.getString("P_KIND"));
-			product.setP_price(rs.getString("P_PRICE"));
-			product.setP_content(rs.getString("P_CONCTENT"));
-			product.setP_quantity(rs.getString("P_QUANTITY"));
-			product.setIndate(rs.getDate("INDATE"));
+		try {
+			conn = JDBCUtill.getConnction();
+			pstmt = conn.prepareStatement(PRODUCTS_LIST);
+			rs = pstmt.executeQuery();
 			
-			productsList.add(product);
+			while (rs.next()) {
+				ProductsDTO product = new ProductsDTO();
+				product.setP_code(rs.getInt("P_CODE"));
+				product.setP_name(rs.getString("P_NAME"));
+				product.setP_kind(rs.getString("P_KIND"));
+				product.setP_price(rs.getString("P_PRICE"));
+				product.setP_content(rs.getString("P_CONTENT"));
+				product.setP_quantity(rs.getString("P_QUANTITY"));
+				product.setIndate(rs.getDate("INDATE"));
+				
+				productList.add(product);
+			}
+			
+			System.out.println("ProductList에 레코드 추가 성공");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("ProductList에 레코드 추가 실패");
+	
+		} finally {
+			JDBCUtill.close(rs, pstmt, conn);
 		}
 		
-		System.out.println("ProductsList에 레코드 추가 성공");
-		
-	} catch (Exception e) {
-		e.printStackTrace();
-		System.out.println("ProductsList에 레코드 추가 실패");
-
-	} finally {
-		JDBCUtill.close(pstmt, conn);
-	}
-	
-		return productsList;
+		return productList;
 	}
 }

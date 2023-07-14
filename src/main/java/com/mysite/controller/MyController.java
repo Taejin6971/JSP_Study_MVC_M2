@@ -377,13 +377,13 @@ public class MyController extends HttpServlet {
 			
 			ProductsDAO dao = new ProductsDAO();
 			
-			List<ProductsDTO> productsList = new ArrayList<ProductsDTO>(); 
+			List<ProductsDTO> productList = new ArrayList<ProductsDTO>(); 
 			
-			productsList = dao.getProductsList(dto);
+			productList = dao.getProductList(dto);
 			
 			HttpSession session = request.getSession();
 			
-			session.setAttribute("productsList", productsList);
+			session.setAttribute("productList", productList);
 			
 			response.sendRedirect("getProductList.jsp");
 		}

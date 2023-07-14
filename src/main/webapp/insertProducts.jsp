@@ -15,10 +15,14 @@
 <body>
 	<center>
 		<h1>상품 입력</h1>
-
+		<%
+		if (sessionRole.equals("Admin")){
+		%>
+		<h1>이 페이지는 관리자만 접근 할수있는 페이지 입니다.</h1>
+		
 		<a href="logout.do">Log-out</a>
 		<hr>
-		<form action="insertprodutc.do" method="post">
+		<form action="insertProducts.do" method="post">
 			<table border="1" cellpadding="0" cellspacing="0">
 				<tr>
 					<td bgcolor="orange" width="70">상품코드</td>
@@ -50,7 +54,16 @@
 				</tr>
 			</table>
 		</form>
-	
+		<a href="getProductList.do">상품 리스트 페이지</a>
+		<%
+		} else if (sessionRole.equals("User")){
+		%>
+		<h1>이 페이지는 일반유저는 접근할수 없는 페이지 입니다.</h1>
+		<%
+		}		
+		%>
+		<hr>
+		<a href="/JSP_Study_MVC_M2">처음으로 이동</a>
 	</center>
 </body>
 </html>

@@ -6,10 +6,15 @@
 
 <%
 // session에 저장된 값을 꺼낸다.
-	List<ProductsDTO> productsList = new ArrayList<ProductsDTO>();
+	List<ProductsDTO> productList = new ArrayList<ProductsDTO>();
 	
-	productsList = (List) session.getAttribute("productsList");
+	productList = (List) session.getAttribute("productList");
 %>    
+
+<%
+	String sessionId = (String) session.getAttribute("id");
+	String sessionRole = (String) session.getAttribute("role");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,6 +24,11 @@
 <body>
 	<center>
 		<h1>상품 목록</h1>
+		<%
+		if (sessionRole.equals("Admin")){
+		%>
+		<h1>이 페이지는 관리자만 접근 할수있는 페이지 입니다.</h1>
+		
 		<table border="1px" cellpading="0" cellspacing="0" width="700px">
 			<tr>
 				<th bgcolor="orange" width="100px">상품코드</th>
@@ -30,7 +40,7 @@
 			</tr>
 			
 			<%
-			for (ProductsDTO k : productsList) {
+			for (ProductsDTO k : productList) {
 			%>
 			<tr>
 				<td><%=k.getP_code() %></td>
@@ -45,6 +55,16 @@
 			session.removeAttribute("productsList");
 			%>
 		</table>
+		<a href="insertProducts.jsp">새 상품 등록</a><p/>
+		<%
+		} else if (sessionRole.equals("User")){
+		%>
+		<h1>이 페이지는 일반유저는 접근할수 없는 페이지 입니다.</h1>
+		<%
+		}
+		%>
+		<hr>
+		<a href="/JSP_Study_MVC_M2">처음으로 이동</a>
 	</center>
 </body>
 </html>
