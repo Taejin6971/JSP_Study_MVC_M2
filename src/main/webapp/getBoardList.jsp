@@ -21,11 +21,33 @@
 		width: 700px;
 		margin: 0 auto;
 	}
+	select, 
+	input {
+		padding: 3px;
+	}
 </style>
 </head>
 <body>
 	<div>
 		<h1>글 목록</h1>
+		<br>
+		<table border="1px" cellpading="0" cellspacing="0" width="700px">
+			<tr><td>
+				<form action="getBoardList.do" method="post">
+					<select name="searchCondition">
+						<option value="TITLE">제목 검색</option>
+						<option value="WRITE">작성자 검색</option>
+						<option value="CONTENT">내용 검색</option>
+						<option value="REGDATE">날짜 년도 검색</option>
+					</select>
+					
+					<input type="text" name="searchKeyword" size="40">
+					<input type="submit" value="검색시작">
+				</form>
+			</td></tr>
+		</table>
+		주의 : 날짜 검색시 년-월-일 형식으로 넣으세요. 예) 2023-07-10
+		<br><br> 
 
 		<table border="1px" cellpading="0" cellspacing="0" width="700px">
 			<tr>

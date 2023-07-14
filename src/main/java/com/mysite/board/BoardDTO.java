@@ -2,6 +2,9 @@ package com.mysite.board;
 
 import java.sql.Date;
 
+import lombok.Data;
+
+@Data
 public class BoardDTO {
 
 	// DTO (VO) : 데이터를 받아서 전송해주는 객체
@@ -27,63 +30,13 @@ public class BoardDTO {
 	private Date regdate;
 	private int cnt;
 	
-	// 기본 생성자
-	public void BoardDTO() {}
+	// ============================ 테이블 매핑 컬럼 끝
 	
-	// getter / setter 생성
-	public int getSeq() {
-		return seq;
-	}
-
-	public void setSeq(int seq) {
-		this.seq = seq;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getWrite() {
-		return write;
-	}
-
-	public void setWrite(String write) {
-		this.write = write;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public Date getRegdate() {
-		return regdate;
-	}
-
-	public void setRegdate(Date regdate) {
-		this.regdate = regdate;
-	}
-
-	public int getCnt() {
-		return cnt;
-	}
-
-	public void setCnt(int cnt) {
-		this.cnt = cnt;
-	}
+	// 검색 기능을 처리하는 변수 : 3개 추가
+	private String searchCondition;	// TITLE, WRITE, CONTENT, REGDATE
+	private String searchKeyword;	// 검색어 : ?
 	
-	// toString 오버라이딩 객체 자체를 출력시 필드의 내용을 출력
-	@Override
-	public String toString() {
-		return "BoardDTO [seq=" + seq + ", title=" + title + ", write=" + write + ", content=" + content
-				+ ", regdate=" + regdate + ", cnt=" + cnt + "]";
-	}
-
+	// 날자 기준으로 검색 : 년도만 검색
+	private Date searcheDate;
+	
 }

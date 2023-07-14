@@ -40,6 +40,21 @@ public class BoardDAO {
 	private final String BOARD_LIST = 
 			"select * from board order by seq desc";
 
+	//  검색 기능 쿼리 추가
+		// 제목으로 검색하는 쿼리 (T: TITLE, W: WRITE, C:CONTENT)
+	private final String BOARD_LIST_T =
+			"select * from board where TITLE like '%'||?||'%' order by seq desc";
+
+	private final String BOARD_LIST_W =
+			"select * from board where WRITE like '%'||?||'%' order by seq desc";
+	
+	private final String BOARD_LIST_C =
+			"select * from board where CONTENT like '%'||?||'%' order by seq desc";
+	
+	private final String BOARD_LIST_R =
+			"select * from board where REGDATE like '%'||?||'%' order by seq desc";
+	
+			
 	// 1. board 테이블에 값을 넣는 메소드 : insert
 		// BOARD_INSERT = "insert into board(seq, title, write, content) "
 		// + "values((select nvl(max(seq),0) + 1 from board), ?, ?, ?)";
@@ -180,14 +195,48 @@ public class BoardDAO {
 
 	// 5. 리스트 페이지 (BOARD_LIST) : 레코드 여러개
 		// BOARD_LIST = "select * from board order by seq desc";
+		// BOARD_LIST_T = "select * from board where TITLE like '%'||?||'%' order by seq desc";
+		// BOARD_LIST_W = "select * from board where WRITE like '%'||?||'%' order by seq desc";
+		// BOARD_LIST_C = "select * from board where CONTENT like '%'||?||'%' order by seq desc";
+		// BOARD_LIST_R = "select * from board where REGDATE like '%'||?||'%' order by seq desc"
 	public List<BoardDTO> getBoardList(BoardDTO dto) {
 		System.out.println("getBoardList 메소드 호출 - 게시판 리스트 페이지");
+		
 		// 주의 : try 블락 밖에서 선언되어야 한다.
 		List<BoardDTO> boardList = new ArrayList<BoardDTO>();
 		
 		try {
 			conn = JDBCUtill.getConnction();
-			pstmt = conn.prepareStatement(BOARD_LIST);
+			
+			System.out.println("===== BoardDAO 출력 =====");
+			System.out.println(dto.getSearchCondition());
+			System.out.println(dto.getSearchKeyword());
+			
+			// if 조건을 사용해서 dto의 넘어오는 dto.getSearchCondition() : TITLE, WRITE, CONTENT
+			if (dto.getSearchCondition().equals("TITLE")) {
+				pstmt = conn.prepareStatement(BOARD_LIST_T);
+			} else if (dto.getSearchCondition().equals("WRITE")) {
+				pstmt = conn.prepareStatement(BOARD_LIST_W);
+			} else if (dto.getSearchCondition().equals("CONTENT")) {
+				pstmt = conn.prepareStatement(BOARD_LIST_C);
+			} else if (dto.getSearchCondition().equals("REGDATE")) {
+				pstmt = conn.prepareStatement(BOARD_LIST_R);
+			}
+			
+			if (dto.getSearchCondition().equals("REGDATE")) {
+				System.out.println("호출 성공");
+				// java.sql.Date d = java.sql.Date.valueOf("2023-07-12");
+				java.sql.Date d = java.sql.Date.valueOf(dto.getSearchKeyword());
+				
+				pstmt.setDate(1, d);
+			} else {
+				System.out.println("출력됨");
+				// ? 에 값 할당
+				pstmt.setString(1, dto.getSearchKeyword());
+				
+			}
+			
+			// pstmt = conn.prepareStatement(BOARD_LIST);
 			rs = pstmt.executeQuery();		// rs에는 select한 결과 레코드셋을 담고 있다.
 			
 			// rs의 값을 꺼내어 DTO에 저장
@@ -217,4 +266,6 @@ public class BoardDAO {
 		}
 		return boardList;	// boardList : board 테이블의 각각의 레코드를 dto에 담아서 boardList에 저장.
 	}
+	
+	
 }
